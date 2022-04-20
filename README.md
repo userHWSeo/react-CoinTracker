@@ -1,70 +1,285 @@
-# Getting Started with Create React App
+# React Master Class
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+###
 
-## Available Scripts
+노마드코더 강의 내용 정리를 위한 README 입니다.
+<br>
+<br>
+<br>
+<br>
 
-In the project directory, you can run:
+#### 220420
 
-### `npm start`
+Styled-Components의 사용
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<br>
+설치 방법
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+$ npm i styled-components
+```
 
-### `npm test`
+<br>
+<br>
+기본 문법은
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+const Header = styled.div `
+    color: white;
+`;
 
-### `npm run build`
+function App() {
+  return (
+    <Header>
+    </Header>
+  );
+}
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+형태로 사용이 되게 된다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<br>
+백틱 안에 css 형태의 스타일링을 하게 되면 되는데 Sass와 같은 문법 사용도 가능하다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<br>
+<br>
+같은 컴포넌트지만 다른 props를 받아 사용할 수도 있다.
 
-### `npm run eject`
+```
+const Box = styled.div `
+    color: white;
+    width: 100px;
+    height: 100px;
+    backgroundColor: ${(props)=> props.bgColor}
+`;
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+function App() {
+  return (
+    <Box bgColor="tomato" />
+    <Box bgColor="blue" />
+  );
+}
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+같은 Box지만 다른 props를 인자로 받아 각각의 배경색을 출력한다.
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+<br>
+<br>
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+기존 컴포넌트의 요소를 그대로 유지하면서 새로운 코드를 추가 할 수도 있다. (Extend)
 
-## Learn More
+<br>
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+const Box = styled.div `
+    color: white;
+    width: 100px;
+    height: 100px;
+    backgroundColor: ${(props)=> props.bgColor}
+`;
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+const Circle = styled(Box)`
+    border-radius: 50px;
+`;
 
-### Code Splitting
+function App() {
+  return (
+    <Box bgColor="tomato" />
+    <Circle bgColor="blue" />
+  );
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+<br>
+<br>
+같은 컴포넌트지만 태그만 변경하고 싶을 때
 
-### Analyzing the Bundle Size
+```
+as="원하는 태그"
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+를 사용할 수있다.
 
-### Making a Progressive Web App
+<br>
+<br>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
+const Btn = styled.button`
+    color: tomato;
+`;
 
-### Advanced Configuration
+function App() {
+  return (
+    <Wrapper>
+        <Btn>Log in</Btn>
+        <Btn as="a">Go home</Btn>
+    </Wrapper>
+  );
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+<br>
+<br>
 
-### Deployment
+html 속성이 반복되는 컴포넌트를 만들 때 attrs()를 사용해주면 된다.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```
+const Input = styled.input.attrs(required: true, maxLength: 10)`
+    backgroundColor: "tomato";
+`;
 
-### `npm run build` fails to minify
+function App() {
+  return (
+    <Wrapper>
+        <Input />
+        <Input />
+        <Input />
+        <Input />
+        <Input />
+        <Input />
+    </Wrapper>
+  );
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<br>
+<br>
+애니메이션 효과는 CSS와 같다.
+
+```
+const Wrapper = styled.div`
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+`;
+
+const anim= keyframes`
+    form {
+        color: tomato;
+    }
+    to {
+        color: teal;
+    }
+`
+
+const Btn = styled.button`
+    animation: ${anim} 0.5s infinite;
+`;
+
+function App() {
+  return (
+    <Wrapper>
+        <Btn>Hi !</Btn>
+    </Wrapper>
+  );
+}
+```
+
+<br>
+<br>
+Pseudo Selector 사용도 가능하다.
+<br>
+이는 Sass의 사용법과 유사하다.
+
+```
+const Wrapper = styled.div`
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    h1{
+        color: tomato;
+        &:hover{
+        color: green;
+    }
+    }
+`;
+
+function App() {
+  return (
+    <Wrapper>
+        <h1>Hello</h1>
+    </Wrapper>
+  );
+}
+```
+
+<br>
+<br>
+Themes를 사용한 dark모드와 light모드를 구현
+
+추가적인 구현으론 현재 시간을 가져와 오후 6시(18시)가 넘어가게 되면 dark모드로 오후 6시 전은 light모드로 바꿔지게끔 구현했음.
+
+```
+/// App.js
+
+
+import styled from "styled-components";
+
+const Title = styled.h1`
+  color: ${(props) => props.theme.textColor};
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vh;
+  height: 100vw;
+  background-color: ${(props) => props.theme.backgroundColor};
+`;
+
+function App() {
+  return (
+    <Wrapper>
+      <Title>Hello !</Title>
+    </Wrapper>
+  );
+}
+
+export default App;
+```
+
+```
+/// index.js
+
+
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import { ThemeProvider } from "styled-components";
+
+const darkTheme = {
+  textColor: "whitesmoke",
+  backgroundColor: "#111",
+};
+
+const lightTheme = {
+  textColor: "111",
+  backgroundColor: "#whitesmoke",
+};
+
+function themeSwitch() {
+  let date = new Date();
+  let hours = date.getHours();
+  console.log(hours);
+  if (hours < 18) {
+    return lightTheme;
+  } else {
+    return darkTheme;
+  }
+}
+
+ReactDOM.render(
+  <React.StrictMode>
+    <ThemeProvider theme={themeSwitch()}>
+      <App />
+    </ThemeProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+
+```

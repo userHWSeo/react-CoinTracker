@@ -1,18 +1,23 @@
 import styled from "styled-components";
 
-const Father = styled.div`
-  display: flex;
+const Title = styled.h1`
+  color: ${(props) => props.theme.textColor};
 `;
 
-const Input = styled.input.attrs({ required: true })`
-  background-color: tomato;
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vh;
+  height: 100vw;
+  background-color: ${(props) => props.theme.backgroundColor};
 `;
 
 function App() {
   return (
-    <Father>
-      <Input />
-    </Father>
+    <Wrapper>
+      <Title>Hello !</Title>
+    </Wrapper>
   );
 }
 
