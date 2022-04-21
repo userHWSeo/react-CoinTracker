@@ -1,15 +1,15 @@
 # React Master Class
 
-###
+### 노마드코더 강의 내용 정리 및 복습을 위한 README 입니다.
 
-노마드코더 강의 내용 정리를 위한 README 입니다.
 <br>
 <br>
 <br>
 <br>
 
-#### 220420
+### 220420
 
+<br>
 Styled-Components의 사용
 
 <br>
@@ -283,3 +283,101 @@ ReactDOM.render(
 );
 
 ```
+
+<br>
+<br>
+<br>
+<br>
+
+### 220420
+
+<br>
+
+TypeScript 설치 및 활용
+<br>
+<br>
+자바스크립트는 타입화 된 프로그래밍 언어들과 달리 코드 실행 전 타입에 대한 정의가 존재하지 않는다.
+<br>
+<br>
+타입스크립트는 타입에 대해 엄격하게 판단하여 코드가 실행되기 전에 실수를 파악해주며, 수정 전까지 코드를 실행하지 않는다.
+<br>
+<br>
+기본적인 형태는 :(콜론)을 사용하여 타입을 적는 것이다.
+
+```
+const plus = (a:number, b:number) => a + b;
+```
+
+<br>
+
+하지만 위의 형태로 사용하는 것보다 컴포넌트를 만들어 사용하는 것이 대부분이다.
+<br>
+interface를 사용하여 컴포넌트를 생성하고 : (콜롬)을 사용하며, 컴포넌트에 있는 요소는 꼭 사용해야한다.
+<br>
+만약 선택적(optional)으로 사용하길 원한다면 prop에 ? 를 붙이면 된다.
+
+```
+interface DummyProps {
+  text: string;
+  active?: boolean;
+  // boolean |(or) undefined
+}
+
+function Dummy({text, active}: DummyProps) {
+  return <H1>{text}</H1>
+};
+```
+
+<br>
+
+또한 prop에 default값을 줄 수도 있다.
+<br>
+
+```
+interface DummyProps {
+  text: string;
+  active?: boolean;
+}
+
+function Dummy({text, active=false}: DummyProps) {
+  return <H1>{text}</H1>
+  // Dummy에 default 값 주기1
+};
+
+function App() {
+  return (
+    <div>
+      <Container>
+        <Dummy active={true} text="hello" />
+        // Dummy에 default 값 주기2
+      </Container>
+    </div>
+  );
+}
+```
+
+<br>
+
+event에 타입을 정하는 것도 가능하다.
+<br>
+React의 event 사용법은 자바스크립트와 달라 SyntheticEvent를 검색해 이벤트 가이드를 보며 원하는 이벤트를 찾아야한다.
+
+```
+function App() {
+  const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event
+  }
+
+  return (
+    <div>
+      <Container>
+          <button onClick={onClick}>click me</button>
+      </Container>
+    </div>
+  );
+```
+
+<br>
+타입을 가지고 있지 않은 라이브러리를 사용할 때 에러가 발생할 수 있다.
+<br>
+라이브러리를 install할 때 @types/를 붙여 install을 하면 몇몇 라이브러리는 타입을 가진 채로 다운될 것이다.
