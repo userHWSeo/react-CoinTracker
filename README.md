@@ -486,7 +486,12 @@ const { state } = useLocation() as RouteState;
 
 <br>
 마지막으로 API에서 Coin의 정보와 Coin의 가격 정보를 받아오고 interface를 통해 type을 정해준다.
+<br>
 console.log로 각 API를 확인 한 후 API에서 key와 value의 typeof 로 손쉽게 interface를 만들 수 있다.
+<br>
+웹페이지 콘솔창에 API의 객체를 마우스 우클릭 후
+<br>
+Store object as global variable을 클릭하면 object 데이터를 temp1이라는 곳에 저장된다.
 
 ```
 const [info, setInfo] = useState<IInfoData>();
@@ -505,3 +510,107 @@ const [info, setInfo] = useState<IInfoData>();
 
 <br>
 하나하나 type을 정하는 것이 까다롭지만 안정장치라고 생각하면 너무 큰 장점이긴하다.
+
+<br>
+<br>
+<br>
+<br>
+
+### 220425
+
+<br>
+nested router를 사용하여 Outlet을 사용했다.
+<br>
+자식 라우트의 엘리멘트가 있는 경우 렌더링해주는데 Outlet은 부모 경로 요소에서 자식 경로 요소를 렌더링하는데 사용한다.
+<br>
+Outlet을 사용하면 하위 경로가 렌더링될 떄 중첩된 UI를 표시할 수 있다.
+<br>
+(예전 삼성 홈페이지 클론을 연습할 때 핸드폰의 색상에 따라 경로가 바뀌었는데 Outlet을 사용한거 같다.)
+<br>
+부모 라우트가 정확히 일치하면 자식 인덱스 라우트를 렌더링하거나 인덱스 라우터가 없으면 렌더링하지 않는다.
+<br>
+
+```
+< Route path="/food" element={< Food / >} >
+< Route path="pizza" element={< Pizza / >} / >
+< Route path="cola" element={< Cola / >} / >
+
+// Route가 상대경로도 지원하여 path를 path="cola"와 같이 사용 가능.
+
+< /Route >
+
+import { Outlet } from "react-router-dom";
+
+function Food() {
+return (
+  < div >
+    < h1 >Food< / h1 >
+    < Outlet / > // 자식 엘리먼트를 넣고자 하는 곳에 위치
+  < /div >
+);
+}
+```
+
+<br>
+useMatch()는 () 안 경로로 위치해 있을 경우 지정된 경로에 대한 데이터를 반환한다.
+
+```
+const {coinId} = useParams();
+const priceMatch = useMatch("/:coinId/price");
+const chartMatch = useMatch("/:coinId/chart");
+
+return (
+  <Tabs>
+    <Tab isActive={chartMatch !== null}>
+      <Link to={`/${coinId}/chart`}>Chart</Link>
+  </Tab>
+  <Tab isActive={priceMatch !== null}>
+      <Link to={`/${coinId}/price`}>Price</Link>
+  </Tab>
+  </Tabs>
+ );
+
+// isActive를 활용하여 chartMatch가 null이 아니면 true로 반환한다.
+```
+
+<br>
+위와 같이 useMatch를 사용하여 해당 경로의 params(coinId)를 받아낸다.
+
+<br>
+<br>
+<br>
+React query를 사용하여 api.ts를 만들어 그 안에 fetcher 함수를 만들어 사용하였으며, useQuery의 기본 형태는 아래와 같다.
+
+```
+// useQuery의 기본 셋팅 - index.tsx
+
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
+
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Home />
+    </QueryClientProvider>
+  );
+}
+```
+
+```
+// Coin.tsx
+
+
+
+const {isLoading: infoLoading, data : infosData} = useQuery<IInfoData>(["info", coinId] , () => fetch함수(argument));
+const {isLoading: tickersLoading, data : tickersData} = useQuery<IPriceData>(["tickers", coinId] , () => fetch함수(argument));
+
+
+
+
+// isLoading은 리엑트 쿼리에서 지원해주는 기능이며, 이뿐만 아니라 isError, refetch 등도 기능해준다.
+// const { data, isLoading, error } = useQuery(queryKey, queryFn, options) 와 같은 형태로 사용이 된다.
+// isLoading과 data가 중복되어 사용할 수 없으니 'isLoading : 원하는 이름'과 같은 형태로 이름을 바꿔 사용한다.
+// QueryKey에서 변수를 사용 해야하는 경우가 생기게 되면, 배열을 만들어 변수명을 넣어주면 된다. 여기서 우린 coinId를 사용하여 id에 맞는 코인의 데이터를 가져와야 하므로 coinId를 넣어준다.
+
+```

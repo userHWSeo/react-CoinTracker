@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 import Router from "./routes/Router";
-
+import {ReactQueryDevtools} from "react-query/devtools";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Dongle:wght@700&family=Gugi&family=Indie+Flower&family=Jua&family=Mochiy+Pop+P+One&family=Roboto+Mono:wght@500&family=Rock+3D&family=Sunflower:wght@300&display=swap');
@@ -55,9 +55,11 @@ table {
   box-sizing: border-box;
 }
 body{
+  font-weight: 300;
   font-family: 'Gugi', cursive;
   background-color: ${props=> props.theme.bgColor};
   color: ${props=> props.theme.textColor};
+  line-height: 1.2;
 }
 a{
   text-decoration: none;
@@ -71,6 +73,7 @@ function App() {
   <>
     <GlobalStyle  />
     <Router />
+    <ReactQueryDevtools initialIsOpen={true}/>
   </>
   )
 }
