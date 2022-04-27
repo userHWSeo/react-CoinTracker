@@ -614,3 +614,199 @@ const {isLoading: tickersLoading, data : tickersData} = useQuery<IPriceData>(["t
 // QueryKey에서 변수를 사용 해야하는 경우가 생기게 되면, 배열을 만들어 변수명을 넣어주면 된다. 여기서 우린 coinId를 사용하여 id에 맞는 코인의 데이터를 가져와야 하므로 coinId를 넣어준다.
 
 ```
+
+<br>
+<br>
+<br>
+<br>
+
+### 220426
+
+Chart.tsx에 coinId(props)를 주고, id에 따른 암호화폐의 open, high, low, close등 data들을 받아온다.
+
+```
+function Chart({ coinId }: ChartProps) {
+  // coindId와 ChartProps라는 interface를 넣어준다.
+}
+```
+
+<br>
+fetch를 하나 만들어 원하는 날짜에 정보를 가져오는데 이때 시작 날짜와 끝나는 날짜를 api주소에 넣어서 사용한다.
+
+```
+export function fetchCoinHistory(coinId: string) {
+  const endDate = Math.floor(Date.now() / 1000);
+  const startDate = endDate - 60 * 60 * 24 * 7 * 2;
+  return fetch(
+    `${BASE_URL}/coins/${coinId}/ohlcv/historical?start=${startDate}&end=${endDate}`
+  ).then((response) => response.json());
+}
+```
+
+<br>
+useQuery로 data를 받아오고, react query devtool로 query와 data를 확인한다.
+<br>
+
+이후 apexcharts라는 Chart API를 사용한다.
+<br>
+차트는 선형부터 점형, 원형 등 여러가지 차트와 디자인을 제공해준다.
+<br>
+<br>
+https://apexcharts.com
+<br>
+<br>
+해당 사이트에 ApexChart의 컴포넌트 props들이 자세히 나와있으며 기본적인 형태의 props들은 이미 넣어져 있어 바로 사용 할 수도 있다.
+<br>
+차트에 표시하려는 데이터(Array)의 값은 data의 종가(close),
+<br>
+xaxis에 categories는 종가(close)의 날짜를 넣어준다.
+
+```
+<ApexChart
+          type="line"
+          series={[
+            {
+              name: "sales",
+              data: data?.map((price: any) => price.close) as number[],
+            },
+          ]}
+            xaxis: {
+              categories: data?.map((price) => price.time_close),
+            },
+
+        />
+
+// map함수를 사용하여 price.close/price.time_close의 배열만 따로 가져온다.
+
+```
+
+<br>
+
+암호화폐의 특성상 실시간으로 화폐의 가치가 변하기 때문에
+<br>
+refetchInterval을 사용하여 10000 m/s 마다 refetch 시켜준다.
+
+```
+const { isLoading: tickersLoading, data: tickersData } = useQuery<IPriceData>(
+    ["tickers", coinId],
+    () => fetchCoinTickers(coinId!),
+    {
+      refetchInterval: 10000,
+    }
+  );
+```
+
+<br>
+
+이후 웹사이트의 제목을 바꾸기 위해 React Helmet을 사용한다.
+
+```
+$ npm i react-helmet
+```
+
+- Warning: Using UNSAFE_componentWillMount in strict mode is not
+  <br>
+  recommended and may indicate bugs in your code.
+
+경고창이 나오면 React Helmet 대신 React Helmet Async를 사용하면 된다.
+
+```
+npm i react-helmet-async
+```
+
+```
+// App.tsx
+
+import { HelmetProvider } from "react-helmet-async";
+
+< HelmetProvider >
+< Router />
+< / HelmetProvider >
+
+// Chart.tsx
+import { Helmet } from "react-helmet-async";
+
+< Helmet >
+< title >Chart< / title >
+< / Helmet >
+
+// App.tsx에 Router를  HelmetProvider 로 감싸주고
+// Chart.tsx에 Helmet을 만들어 원하는 title을 넣어준다.
+// 만약 React Helmet을 사용하면 App.tsx의 Provider은 생략해도 된다.
+```
+
+이후 Price창은 현재가격과 시가, 종가를 만들었고
+<br>
+Coin 창에서 다시 Coins창으로 넘어가기 위한 뒤로가기 버튼을 만들었다.
+
+<br>
+<br>
+<br>
+<br>
+
+### 220427
+
+다크모드와 라이트모드를 구현을 하기 위해 Recoil를 배웠다.
+
+```
+$ npm install recoil
+```
+
+<br>
+단순 React만 사용할 때
+<br>
+App 컴포넌트에서 state와 state manipulation을 계단식으로 전달해줘야하는데
+<br>
+예)  
+App 컴포넌트에서 Dark Mode(isDark)를 전달할 때
+
+App -> Router -> Coins (Home화면에 Dark모드를 위해 전달)
+App -> Router -> Coin -> Chart (Chart에 Dark모드를 위해 전달)
+<br>
+
+위와 같이 App에서 출발하여 계단식으로 여러번 전달해주어야한다.
+<br>
+<br>
+이를 좀 더 효율적이게 만들기 위해 Recoil를 활용하는데
+<br>
+Recoil은 상태관리 라이브러리로
+<br>
+redux와는 다르게 Atomic 모델 기반이며
+<br>
+redux와의 비교는 아래 링크를 남겨놓겠다.
+<br>
+https://velog.io/@katanazero86/redux-recoil-%EB%82%B4%EC%9A%A9-%EC%A0%95%EB%A6%AC
+
+<br>
+Atom은 상태의 일부를 나타내는데, 컴포넌트들이 이 상태를 확인한다. 
+<br>
+Atom에 변화가 있으면 atom을 사용하는 컴포넌트들이 atom의 상태를 받아 리렌더링 된다.
+<br>
+
+```
+// atoms.ts
+
+import { atom } from "recoil";
+
+export const isDarkAtom = atom({
+  key: "isDark",
+  default: true,
+});
+
+// Dark모드를 위한 atom이며, default가 true이면 Dark, false면 Light다.
+```
+
+<br>
+useRecoilState는 컴포넌트가 atom을 사용 할 수 있게 해준다.
+<br>
+(읽고 쓰기 모두 가능.)
+
+```
+const setDarkAtom = useSetRecoilState(isDarkAtom);
+```
+
+useRecoilValue는 읽을 수만 있게 하고 싶을 때 사용하는걸 추천한다.
+
+```
+  const isDark = useRecoilValue(isDarkAtom);
+```

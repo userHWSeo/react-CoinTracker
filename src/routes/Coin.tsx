@@ -148,6 +148,8 @@ interface IPriceData {
   };
 }
 
+interface ICoinProps {}
+
 function Coin() {
   const { coinId } = useParams();
   const { state } = useLocation() as RouteState;
